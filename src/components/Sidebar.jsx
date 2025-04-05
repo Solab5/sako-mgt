@@ -9,40 +9,51 @@ const Sidebar = () => {
   if (!activeGroup) return null;
 
   const navItems = [
-    { path: '/', label: 'Dashboard', showAlways: true },
-    { path: '/savings', label: 'Savings', showAlways: false },
-    { path: '/loans', label: 'Loans', showAlways: false },
-    { path: '/members', label: 'Members', showAlways: false },
-    { path: '/reports', label: 'Reports', showAlways: false },
+    { path: '/dashboard', label: 'Dashboard', icon: '📊' },
+    { path: '/members', label: 'Members', icon: '👥' },
+    { path: '/savings', label: 'Savings', icon: '💰' },
+    { path: '/loans', label: 'Loans', icon: '💸' },
+    { path: '/reports', label: 'Reports', icon: '📝' },
   ];
 
   return (
-    <aside className="bg-gray-800 text-white w-64 min-h-screen p-4">
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-1">{activeGroup.name}</h2>
-        <p className="text-gray-400 text-sm">Savings Group</p>
+    <aside className="fixed left-0 top-16 w-64 h-full bg-white border-r border-gray-200 shadow-sm overflow-y-auto">
+      <div className="p-4 border-b border-gray-200">
+        <h2 className="text-lg font-semibold text-gray-900">{activeGroup.name}</h2>
+        <p className="text-sm text-gray-500">Savings Group</p>
       </div>
       
-      <nav>
-        <ul>
+      <nav className="mt-4 px-3">
+        <div className="space-y-1">
           {navItems.map((item) => (
-            (item.showAlways || activeGroup) && (
-              <li key={item.path} className="mb-2">
-                <Link
-                  to={item.path}
-                  className={`block px-4 py-2 rounded-md ${
-                    location.pathname === item.path
-                      ? 'bg-indigo-600 text-white'
-                      : 'text-gray-300 hover:bg-gray-700'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            )
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`nav-link ${
+                location.pathname === item.path
+                  ? 'nav-link-active'
+                  : 'nav-link-inactive'
+              }`}
+            >
+              <span className="mr-3">{item.icon}</span>
+              {item.label}
+            </Link>
           ))}
-        </ul>
+        </div>
       </nav>
+      
+      <div className="p-4 mt-8">
+        <div className="bg-primary-50 rounded-lg p-4">
+          <h3 className="text-sm font-medium text-primary-800">Group Balance</h3>
+          <p className="text-2xl font-bold text-primary-900 mt-1">$12,345</p>
+          <div className="mt-3 text-xs font-medium text-primary-700">
+            <span className="inline-flex items-center">
+              <span>↗</span>
+              <span className="ml-1">12% from last month</span>
+            </span>
+          </div>
+        </div>
+      </div>
     </aside>
   );
 };

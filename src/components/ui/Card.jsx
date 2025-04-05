@@ -4,16 +4,23 @@ const Card = ({
   subtitle,
   footer,
   className = '',
+  variant = 'default',
   ...props 
 }) => {
+  const variantClasses = {
+    default: 'bg-white border border-gray-200',
+    primary: 'bg-primary-50 border border-primary-100',
+    dark: 'bg-dark-900 text-white border border-dark-800'
+  };
+
   return (
     <div 
-      className={`bg-white rounded-lg shadow-md overflow-hidden ${className}`}
+      className={`rounded-lg shadow-sm overflow-hidden ${variantClasses[variant]} ${className}`}
       {...props}
     >
       {(title || subtitle) && (
-        <div className="p-4 border-b">
-          {title && <h3 className="text-lg font-semibold text-gray-800">{title}</h3>}
+        <div className="p-4 border-b border-gray-200">
+          {title && <h3 className="text-lg font-medium">{title}</h3>}
           {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
         </div>
       )}
@@ -23,7 +30,7 @@ const Card = ({
       </div>
       
       {footer && (
-        <div className="p-4 bg-gray-50 border-t">
+        <div className="p-4 bg-gray-50 border-t border-gray-200">
           {footer}
         </div>
       )}

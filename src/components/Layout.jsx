@@ -7,7 +7,7 @@ const Layout = () => {
   const { activeGroup } = useAppContext();
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-50 font-sans">
       <Navbar />
       <div className="flex">
         {activeGroup && <Sidebar />}

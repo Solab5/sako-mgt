@@ -1,136 +1,121 @@
-import { useAppContext } from '../context/AppContext';
+import { useState } from 'react';
 import { Card, Button } from '../components/ui';
-import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
-  const { 
-    activeGroup, 
-    calculateTotalSavings, 
-    calculateOutstandingLoans,
-    getGroupSavings,
-    getGroupLoans
-  } = useAppContext();
-
-  // If no active group is selected, show a message to select or create a group
-  if (!activeGroup) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[80vh] text-center">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to Sako</h1>
-        <p className="text-lg text-gray-600 mb-8">
-          To get started, please select or create a savings group.
-        </p>
-        <Link to="/groups">
-          <Button variant="primary" size="lg">
-            Manage Savings Groups
-          </Button>
-        </Link>
-      </div>
-    );
-  }
-
-  const totalSavings = calculateTotalSavings();
-  const outstandingLoans = calculateOutstandingLoans();
-  const recentSavings = getGroupSavings().slice(0, 5);
-  const recentLoans = getGroupLoans().slice(0, 5);
-
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
+  const [activeTab, setActiveTab] = useState('overview');
+  
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
-      
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <Card title="Total Savings" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-          <div className="text-3xl font-bold">{formatCurrency(totalSavings)}</div>
-          <div className="mt-2">
-            <Link to="/savings" className="text-white underline">View Details</Link>
-          </div>
-        </Card>
-        
-        <Card title="Outstanding Loans" className="bg-gradient-to-r from-purple-500 to-pink-600 text-white">
-          <div className="text-3xl font-bold">{formatCurrency(outstandingLoans)}</div>
-          <div className="mt-2">
-            <Link to="/loans" className="text-white underline">View Details</Link>
-          </div>
-        </Card>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+        <Button variant="primary">New Transaction</Button>
       </div>
       
-      {/* Recent Activity */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Recent Savings */}
-        <Card title="Recent Savings" subtitle="Last 5 transactions">
-          {recentSavings.length > 0 ? (
-            <div className="divide-y">
-              {recentSavings.map((saving) => (
-                <div key={saving.id} className="py-3 flex justify-between">
-                  <div>
-                    <div className="font-medium">{saving.memberName}</div>
-                    <div className="text-sm text-gray-500">{formatDate(saving.createdAt)}</div>
-                  </div>
-                  <div className="font-semibold text-green-600">
-                    {formatCurrency(saving.amount)}
-                  </div>
-                </div>
-              ))}
+      <div className="bg-white shadow-sm rounded-lg p-1 inline-flex space-x-1">
+        <button 
+          className={`btn-tab ${activeTab === 'overview' ? 'btn-tab-active' : 'btn-tab-inactive'}`}
+          onClick={() => setActiveTab('overview')}
+        >
+          Overview
+        </button>
+        <button 
+          className={`btn-tab ${activeTab === 'transactions' ? 'btn-tab-active' : 'btn-tab-inactive'}`}
+          onClick={() => setActiveTab('transactions')}
+        >
+          Transactions
+        </button>
+        <button 
+          className={`btn-tab ${activeTab === 'analytics' ? 'btn-tab-active' : 'btn-tab-inactive'}`}
+          onClick={() => setActiveTab('analytics')}
+        >
+          Analytics
+        </button>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card 
+          title="Group Summary" 
+          className="md:col-span-2"
+        >
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-primary-50 p-4 rounded-lg">
+                <div className="text-sm text-gray-500">Total Members</div>
+                <div className="text-2xl font-bold text-primary-900">24</div>
+              </div>
+              <div className="bg-primary-50 p-4 rounded-lg">
+                <div className="text-sm text-gray-500">Active Loans</div>
+                <div className="text-2xl font-bold text-primary-900">8</div>
+              </div>
+              <div className="bg-primary-50 p-4 rounded-lg">
+                <div className="text-sm text-gray-500">Total Savings</div>
+                <div className="text-2xl font-bold text-primary-900">$12,450</div>
+              </div>
             </div>
-          ) : (
-            <p className="text-gray-500">No recent savings transactions.</p>
-          )}
-          <div className="mt-4">
-            <Link to="/savings">
-              <Button variant="outline" size="sm">View All Savings</Button>
-            </Link>
           </div>
         </Card>
         
-        {/* Recent Loans */}
-        <Card title="Recent Loans" subtitle="Last 5 transactions">
-          {recentLoans.length > 0 ? (
-            <div className="divide-y">
-              {recentLoans.map((loan) => (
-                <div key={loan.id} className="py-3 flex justify-between">
-                  <div>
-                    <div className="font-medium">{loan.memberName}</div>
-                    <div className="text-sm text-gray-500">{formatDate(loan.createdAt)}</div>
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <div className="font-semibold text-red-600">
-                      {formatCurrency(loan.amount)}
-                    </div>
-                    <div className={`text-xs px-2 py-1 rounded-full ${
-                      loan.status === 'active' 
-                        ? 'bg-yellow-100 text-yellow-800' 
-                        : 'bg-green-100 text-green-800'
-                    }`}>
-                      {loan.status === 'active' ? 'Active' : 'Repaid'}
-                    </div>
-                  </div>
-                </div>
-              ))}
+        <Card title="Group Balance" variant="primary">
+          <div className="space-y-4">
+            <div>
+              <div className="text-sm text-primary-700">Current Balance</div>
+              <div className="text-3xl font-bold text-primary-900">$15,245</div>
             </div>
-          ) : (
-            <p className="text-gray-500">No recent loan transactions.</p>
-          )}
-          <div className="mt-4">
-            <Link to="/loans">
-              <Button variant="outline" size="sm">View All Loans</Button>
-            </Link>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Savings</span>
+                <span className="font-medium">$12,450</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Interest</span>
+                <span className="font-medium">$2,795</span>
+              </div>
+            </div>
+            
+            <div className="text-xs text-primary-700 flex items-center">
+              <span className="mr-1">↗</span>
+              <span>12% from last month</span>
+            </div>
+          </div>
+        </Card>
+        
+        <Card 
+          title="Recent Transactions" 
+          className="md:col-span-2"
+        >
+          <div className="space-y-4">
+            <div className="border-l-4 border-primary-500 pl-3 py-1">
+              <div className="text-sm font-medium">John Doe - Savings Deposit</div>
+              <div className="text-xs text-gray-500">Today at 10:30 AM • $250</div>
+            </div>
+            
+            <div className="border-l-4 border-yellow-500 pl-3 py-1">
+              <div className="text-sm font-medium">Jane Smith - Loan Repayment</div>
+              <div className="text-xs text-gray-500">Yesterday at 2:45 PM • $120</div>
+            </div>
+            
+            <div className="border-l-4 border-green-500 pl-3 py-1">
+              <div className="text-sm font-medium">Robert Johnson - Savings Deposit</div>
+              <div className="text-xs text-gray-500">Apr 3, 2025 at 9:12 AM • $300</div>
+            </div>
+          </div>
+        </Card>
+        
+        <Card title="Loan Status" variant="default">
+          <div className="space-y-4">
+            <div>
+              <div className="text-sm text-gray-500">Active Loans</div>
+              <div className="text-2xl font-bold">8</div>
+            </div>
+            
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div className="bg-primary-600 h-2.5 rounded-full" style={{ width: '85%' }}></div>
+            </div>
+            
+            <div className="text-xs text-gray-500">
+              85% repayment rate
+            </div>
           </div>
         </Card>
       </div>

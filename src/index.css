@@ -1,9 +1,14 @@
+@import '@fontsource/inter/300.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -14,4 +19,33 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  @apply font-sans text-gray-900 bg-gray-50;
+  background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@layer components {
+  .nav-link {
+    @apply flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors;
+  }
+  
+  .nav-link-active {
+    @apply bg-primary-600 text-white;
+  }
+  
+  .nav-link-inactive {
+    @apply text-gray-700 hover:bg-gray-100;
+  }
+  
+  .btn-tab {
+    @apply px-4 py-2 text-sm font-medium rounded-md transition-colors;
+  }
+  
+  .btn-tab-active {
+    @apply bg-primary-100 text-primary-700;
+  }
+  
+  .btn-tab-inactive {
+    @apply text-gray-700 hover:bg-gray-100;
+  }
 }
